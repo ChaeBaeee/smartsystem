@@ -185,7 +185,7 @@ fun TimeTrackingScreen() {
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(8.dp),
                             color = subjectColor.copy(alpha = 0.1f),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, subjectColor.copy(alpha = 0.3f))
+                            border = BorderStroke(1.dp, subjectColor.copy(alpha = 0.3f))
                         ) {
                             Column(
                                 modifier = Modifier.padding(16.dp),

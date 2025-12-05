@@ -231,7 +231,7 @@ fun AlertItem(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         color = subjectColor.copy(alpha = 0.1f),
-        border = androidx.compose.foundation.BorderStroke(2.dp, subjectColor.copy(alpha = 0.3f)),
+        border = BorderStroke(2.dp, subjectColor.copy(alpha = 0.3f)),
         elevation = 2.dp
     ) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {

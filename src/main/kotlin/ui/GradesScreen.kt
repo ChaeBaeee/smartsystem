@@ -32,8 +32,8 @@ import com.smartstudy.data.DataManager
 import com.smartstudy.models.Grade
 import com.smartstudy.services.PerformanceMonitoringService
 import java.text.SimpleDateFormat
-import java.util.*
 import com.smartstudy.ui.components.StatPill
+import java.util.*
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.rememberCoroutineScope
 
@@ -222,10 +222,7 @@ fun GradesScreen() {
     if (showAddGradeDialog) {
         AddGradeDialog(
             editingGrade = editingGrade,
-            onDismiss = {
-                showAddGradeDialog = false
-                editingGrade = null
-            },
+            onDismiss = { },
             onAdd = { subjectName: String, type: String, score: Double, maxScore: Double, category: String ->
                 val subject = DataManager.getSubjects().find { it.name == subjectName }
                 if (subject != null) {
@@ -256,8 +253,6 @@ fun GradesScreen() {
                     }
                     gradeVersion++
                     UiEventBus.notifyDataChanged()
-                    showAddGradeDialog = false
-                    editingGrade = null
                 }
             }
         )
@@ -363,9 +358,9 @@ private fun AverageBySubjectCard(
                                 val hex = if (subject.color.startsWith("#")) subject.color.substring(1) else subject.color
                                 val colorInt = hex.toLong(16).toInt()
                                 Color(colorInt or 0xFF000000.toInt())
-                            } catch (e: Exception) {
-                                Color(0xFF6E8BFF)
-                            }
+                                } catch (_: Exception) {
+                                    Color(0xFF6E8BFF)
+                                }
                             
                             Box(
                                 modifier = Modifier
@@ -660,9 +655,9 @@ fun AddGradeDialog(
                                 val hex = if (subject.color.startsWith("#")) subject.color.substring(1) else subject.color
                                 val colorInt = hex.toLong(16).toInt()
                                 Color(colorInt or 0xFF000000.toInt())
-                            } catch (e: Exception) {
-                                Color(0xFF6E8BFF)
-                            }
+                                } catch (_: Exception) {
+                                    Color(0xFF6E8BFF)
+                                }
                             DropdownMenuItem(
                                 onClick = {
                                     subjectName = subject.name

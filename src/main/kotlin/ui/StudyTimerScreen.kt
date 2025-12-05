@@ -24,8 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smartstudy.data.DataManager
@@ -60,10 +58,10 @@ fun StudyTimerScreen() {
     }
 
     val workDurationSeconds = remember(workMinutes) { 
-        workMinutes.toIntOrNull()?.coerceIn(1, 999)?.times(60) ?: 25 * 60 
+        (workMinutes.toIntOrNull()?.coerceIn(1, 999)?.times(60)) ?: (25 * 60)
     }
     val breakDurationSeconds = remember(breakMinutes) { 
-        breakMinutes.toIntOrNull()?.coerceIn(1, 999)?.times(60) ?: 5 * 60 
+        (breakMinutes.toIntOrNull()?.coerceIn(1, 999)?.times(60)) ?: (5 * 60)
     }
     val currentWorkDuration = workDurationSeconds
     val currentBreakDuration = breakDurationSeconds
@@ -110,6 +108,7 @@ fun StudyTimerScreen() {
             isRunning = running
             timerServiceSeconds = serviceSeconds
             timerServiceIsWork = isWork
+            // Values are used in the UI through reactive state
             delay(200)
         }
     }
@@ -274,12 +273,12 @@ fun StudyTimerScreen() {
 
     if (showBreakDialog) {
         AlertDialog(
-            onDismissRequest = { showBreakDialog = false },
+            onDismissRequest = { },
             title = { Text("Break Reminder", fontWeight = FontWeight.Bold) },
             text = { Text(breakReminderService.getBreakMessage()) },
             confirmButton = {
                 Button(
-                    onClick = { showBreakDialog = false },
+                    onClick = { },
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF27AE60))
                 ) {
                     Text("Take Break")
@@ -807,12 +806,3 @@ fun DropdownMenuButton(
     }
 }
 
-fun parseMinutes(text: String, fallback: Int): Int {
-    return text.toIntOrNull()?.coerceIn(1, 999) ?: fallback
-}
-
-fun formatSeconds(seconds: Int): String {
-    val minutes = seconds / 60
-    val secs = seconds % 60
-    return String.format("%02d:%02d", minutes, secs)
-}

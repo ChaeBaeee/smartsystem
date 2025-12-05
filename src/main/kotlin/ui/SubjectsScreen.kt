@@ -32,7 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.Canvas
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -52,15 +52,6 @@ import com.smartstudy.ui.UiEventBus
 import com.smartstudy.utils.hexToColor
 import java.util.UUID
 
-// Helper function to lighten a color for better visibility
-private fun Color.lighten(factor: Float = 0.3f): Color {
-    return Color(
-        red = (red + (1f - red) * factor).coerceIn(0f, 1f),
-        green = (green + (1f - green) * factor).coerceIn(0f, 1f),
-        blue = (blue + (1f - blue) * factor).coerceIn(0f, 1f),
-        alpha = alpha
-    )
-}
 
 
 @Composable
@@ -166,7 +157,7 @@ fun SubjectsScreen(
 
     if (showAddSubjectDialog) {
         AddSubjectDialog(
-            onDismiss = { showAddSubjectDialog = false },
+            onDismiss = { },
                 onAdd = { name: String, hours: Double, color: String ->
                 val subject = Subject(
                     id = UUID.randomUUID().toString(),
@@ -177,7 +168,6 @@ fun SubjectsScreen(
                 DataManager.addSubject(subject)
                 selectedSubjectId = subject.id
                 UiEventBus.notifyDataChanged()
-                showAddSubjectDialog = false
             }
         )
     }
@@ -186,10 +176,7 @@ fun SubjectsScreen(
         AddTopicDialog(
             subjects = subjects,
             selectedSubjectId = topicSubjectId ?: selectedSubjectId,
-            onDismiss = { 
-                showAddTopicDialog = false
-                topicSubjectId = null
-            },
+            onDismiss = { },
             onAdd = { name: String, subjectId: String, difficulty: Int ->
                 val topic = Topic(
                     id = UUID.randomUUID().toString(),
@@ -202,8 +189,6 @@ fun SubjectsScreen(
                     topics = DataManager.getTopics().filter { it.subjectId == subjectId }
                 }
                 UiEventBus.notifyDataChanged()
-                showAddTopicDialog = false
-                topicSubjectId = null
             }
         )
     }
@@ -211,7 +196,7 @@ fun SubjectsScreen(
     editingTopic?.let { topic ->
         EditTopicDialog(
             topic = topic,
-            onDismiss = { editingTopic = null },
+            onDismiss = { },
             onSave = { newName, newDifficulty, newSubjectId ->
                 val updatedTopic = topic.copy(
                     name = newName.trim(),
@@ -222,7 +207,6 @@ fun SubjectsScreen(
                 topics = DataManager.getTopics().filter { it.subjectId == selectedSubjectId }
                 suggestions = reviewService.getSuggestedTopics(limit = 8)
                 UiEventBus.notifyDataChanged()
-                editingTopic = null
             }
         )
     }
