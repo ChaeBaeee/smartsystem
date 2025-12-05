@@ -26,10 +26,7 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Sort
-import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Note
-import androidx.compose.material.icons.Icons.Default
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,9 +38,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.*
@@ -55,32 +49,8 @@ import com.smartstudy.models.Subject
 import com.smartstudy.models.Topic
 import com.smartstudy.services.ReviewSuggestionService
 import com.smartstudy.ui.UiEventBus
+import com.smartstudy.utils.hexToColor
 import java.util.UUID
-
-// Helper function to parse hex color string to Color
-private fun hexToColor(hex: String): Color {
-    return try {
-        val cleanHex = hex.removePrefix("#")
-        when (cleanHex.length) {
-            6 -> {
-                val r = cleanHex.substring(0, 2).toInt(16)
-                val g = cleanHex.substring(2, 4).toInt(16)
-                val b = cleanHex.substring(4, 6).toInt(16)
-                Color(r, g, b)
-            }
-            8 -> {
-                val a = cleanHex.substring(0, 2).toInt(16)
-                val r = cleanHex.substring(2, 4).toInt(16)
-                val g = cleanHex.substring(4, 6).toInt(16)
-                val b = cleanHex.substring(6, 8).toInt(16)
-                Color(r, g, b, a)
-            }
-            else -> Color(0xFF3498DB) // Default blue
-        }
-    } catch (e: Exception) {
-        Color(0xFF3498DB) // Default blue on error
-    }
-}
 
 // Helper function to lighten a color for better visibility
 private fun Color.lighten(factor: Float = 0.3f): Color {
@@ -92,54 +62,6 @@ private fun Color.lighten(factor: Float = 0.3f): Color {
     )
 }
 
-// Helper composable for text with outline/stroke
-@Composable
-private fun OutlinedText(
-    text: String,
-    modifier: Modifier = Modifier,
-    style: TextStyle = TextStyle.Default,
-    fontWeight: FontWeight? = null,
-    color: Color = Color.White,
-    outlineColor: Color = Color.Black,
-    outlineWidth: Float = 2f
-) {
-    val textMeasurer = rememberTextMeasurer()
-    val textStyle = style.copy(
-        fontWeight = fontWeight ?: style.fontWeight,
-        color = color
-    )
-    
-    Box(modifier = modifier) {
-        Text(
-            text = text,
-            style = textStyle,
-            fontWeight = fontWeight,
-            color = color,
-            modifier = Modifier.drawWithContent {
-                // Draw outline by drawing text multiple times with offsets
-                val textLayoutResult = textMeasurer.measure(
-                    text = text,
-                    style = textStyle.copy(color = outlineColor)
-                )
-                
-                // Draw outline strokes in 8 directions
-                for (dx in -outlineWidth.toInt()..outlineWidth.toInt()) {
-                    for (dy in -outlineWidth.toInt()..outlineWidth.toInt()) {
-                        if (dx != 0 || dy != 0) {
-                            drawText(
-                                textLayoutResult = textLayoutResult,
-                                topLeft = Offset(dx.toFloat(), dy.toFloat())
-                            )
-                        }
-                    }
-                }
-                
-                // Draw the main text on top
-                drawContent()
-            }
-        )
-    }
-}
 
 @Composable
 fun SubjectsScreen(
@@ -493,20 +415,16 @@ private fun SubjectSidebar(
                                         .border(2.dp, Color.White, CircleShape)
                                 )
                                 Column {
-                                    OutlinedText(
+                                    Text(
                                         text = subject.name, 
                                         fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
                                         color = Color.White,
-                                        style = MaterialTheme.typography.body1,
-                                        outlineColor = Color.Black,
-                                        outlineWidth = 1.0f
+                                        style = MaterialTheme.typography.body1
                                     )
-                                    OutlinedText(
+                                    Text(
                                         text = "${subject.targetHoursPerWeek} hrs / week", 
                                         style = MaterialTheme.typography.body2,
-                                        color = Color.White.copy(alpha = 0.9f),
-                                        outlineColor = Color.Black,
-                                        outlineWidth = 1.0f
+                                        color = Color.White.copy(alpha = 0.9f)
                                     )
                                 }
                             }
@@ -1295,8 +1213,7 @@ fun SubjectDetailCard(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(topics) { topic ->
-                            val topicSubject = subject
-                            val topicSubjectColor = topicSubject?.let { hexToColor(it.color) } ?: Color(0xFF3498DB)
+                            val topicSubjectColor = hexToColor(subject.color)
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()

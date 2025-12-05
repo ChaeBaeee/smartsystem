@@ -14,7 +14,7 @@ class BreakReminderService {
     /**
      * Start monitoring study session for break reminders
      */
-    fun startMonitoring(session: StudySession, onReminder: (() -> Unit)? = null) {
+    fun startMonitoring(@Suppress("UNUSED_PARAMETER") session: StudySession, onReminder: (() -> Unit)? = null) {
         stopMonitoring()
         onReminderCallback = onReminder
         
@@ -33,43 +33,6 @@ class BreakReminderService {
     fun stopMonitoring() {
         reminderTimer?.cancel()
         reminderTimer = null
-    }
-    
-    /**
-     * Set break interval
-     */
-    fun setBreakInterval(minutes: Int) {
-        breakIntervalMinutes = minutes.coerceIn(10, 60)
-    }
-    
-    /**
-     * Set break duration
-     */
-    fun setBreakDuration(minutes: Int) {
-        breakDurationMinutes = minutes.coerceIn(1, 15)
-    }
-    
-    /**
-     * Get recommended break duration based on study time
-     */
-    fun getRecommendedBreakDuration(studyMinutes: Int): Int {
-        return when {
-            studyMinutes >= 120 -> 15
-            studyMinutes >= 60 -> 10
-            studyMinutes >= 30 -> 5
-            else -> 3
-        }
-    }
-    
-    /**
-     * Check if break is needed based on study duration
-     */
-    fun shouldTakeBreak(session: StudySession): Boolean {
-        if (session.endTime == null) {
-            val elapsed = ((System.currentTimeMillis() - session.startTime) / 60000).toInt()
-            return elapsed >= breakIntervalMinutes
-        }
-        return false
     }
     
     fun getBreakMessage(): String {

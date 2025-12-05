@@ -11,7 +11,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -29,36 +28,12 @@ import com.smartstudy.services.AlertService
 import com.smartstudy.services.ProgressTrackingService
 import com.smartstudy.services.ReviewSuggestionService
 import com.smartstudy.services.StudyScheduleService
+import com.smartstudy.utils.hexToColor
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
-
-// Helper function to parse hex color string to Color
-private fun hexToColor(hex: String): Color {
-    return try {
-        val cleanHex = hex.removePrefix("#")
-        when (cleanHex.length) {
-            6 -> {
-                val r = cleanHex.substring(0, 2).toInt(16)
-                val g = cleanHex.substring(2, 4).toInt(16)
-                val b = cleanHex.substring(4, 6).toInt(16)
-                Color(r, g, b)
-            }
-            8 -> {
-                val a = cleanHex.substring(0, 2).toInt(16)
-                val r = cleanHex.substring(2, 4).toInt(16)
-                val g = cleanHex.substring(4, 6).toInt(16)
-                val b = cleanHex.substring(6, 8).toInt(16)
-                Color(r, g, b, a)
-            }
-            else -> Color(0xFF3498DB) // Default blue
-        }
-    } catch (e: Exception) {
-        Color(0xFF3498DB) // Default blue on error
-    }
-}
 
 @Composable
 fun DashboardScreen(

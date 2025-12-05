@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -359,16 +358,14 @@ private fun AverageBySubjectCard(
                     items(allPerformance) { perf ->
                         val subject = subjects.find { it.id == perf.subjectId }
                         if (subject != null && perf.averageGrade != null) {
-                            val subjectColor = subject.color?.let { colorStr ->
-                                try {
-                                    // Parse hex color string (e.g., "#FF0000" or "FF0000")
-                                    val hex = if (colorStr.startsWith("#")) colorStr.substring(1) else colorStr
-                                    val colorInt = hex.toLong(16).toInt()
-                                    Color(colorInt or 0xFF000000.toInt())
-                                } catch (e: Exception) {
-                                    Color(0xFF6E8BFF)
-                                }
-                            } ?: Color(0xFF6E8BFF)
+                            val subjectColor = try {
+                                // Parse hex color string (e.g., "#FF0000" or "FF0000")
+                                val hex = if (subject.color.startsWith("#")) subject.color.substring(1) else subject.color
+                                val colorInt = hex.toLong(16).toInt()
+                                Color(colorInt or 0xFF000000.toInt())
+                            } catch (e: Exception) {
+                                Color(0xFF6E8BFF)
+                            }
                             
                             Box(
                                 modifier = Modifier
@@ -644,7 +641,6 @@ fun AddGradeDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                val subjects = DataManager.getSubjects().map { it.name }
                 var expanded by remember { mutableStateOf(false) }
                 Box(modifier = Modifier.fillMaxWidth()) {
                     OutlinedButton(
@@ -660,15 +656,13 @@ fun AddGradeDialog(
                         onDismissRequest = { expanded = false }
                     ) {
                         DataManager.getSubjects().forEach { subject ->
-                            val subjectColor = subject.color?.let { colorStr ->
-                                try {
-                                    val hex = if (colorStr.startsWith("#")) colorStr.substring(1) else colorStr
-                                    val colorInt = hex.toLong(16).toInt()
-                                    Color(colorInt or 0xFF000000.toInt())
-                                } catch (e: Exception) {
-                                    Color(0xFF6E8BFF)
-                                }
-                            } ?: Color(0xFF6E8BFF)
+                            val subjectColor = try {
+                                val hex = if (subject.color.startsWith("#")) subject.color.substring(1) else subject.color
+                                val colorInt = hex.toLong(16).toInt()
+                                Color(colorInt or 0xFF000000.toInt())
+                            } catch (e: Exception) {
+                                Color(0xFF6E8BFF)
+                            }
                             DropdownMenuItem(
                                 onClick = {
                                     subjectName = subject.name
