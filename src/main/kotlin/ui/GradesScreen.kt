@@ -413,14 +413,6 @@ fun GradesListCard(
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberLazyListState()
-    var showScrollUp by remember { mutableStateOf(false) }
-    var showScrollDown by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
-
-    LaunchedEffect(scrollState.firstVisibleItemIndex, scrollState.layoutInfo.totalItemsCount) {
-        showScrollUp = scrollState.firstVisibleItemIndex > 0
-        showScrollDown = scrollState.firstVisibleItemIndex < scrollState.layoutInfo.totalItemsCount - 1
-    }
 
     Box(modifier = modifier.fillMaxWidth().heightIn(min = 200.dp, max = 600.dp)) {
         Surface(
@@ -561,40 +553,6 @@ fun GradesListCard(
                         }
                     }
                 }
-            }
-        }
-
-        // Scroll buttons
-        if (showScrollUp && grades.isNotEmpty()) {
-            FloatingActionButton(
-                onClick = {
-                    scope.launch {
-                        scrollState.animateScrollToItem(0)
-                    }
-                },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(16.dp),
-                backgroundColor = Color(0xFF6E8BFF),
-                contentColor = Color.White
-            ) {
-                Icon(Icons.Filled.ArrowUpward, contentDescription = "Scroll Up")
-            }
-        }
-        if (showScrollDown && grades.isNotEmpty()) {
-            FloatingActionButton(
-                onClick = {
-                    scope.launch {
-                        scrollState.animateScrollToItem(scrollState.layoutInfo.totalItemsCount - 1)
-                    }
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp),
-                backgroundColor = Color(0xFF6E8BFF),
-                contentColor = Color.White
-            ) {
-                Icon(Icons.Filled.ArrowDownward, contentDescription = "Scroll Down")
             }
         }
     }
